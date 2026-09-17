@@ -5,11 +5,15 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "format:check": "biome format .",
+    "format": "biome format --write .",
+    "check-types": "turbo run check-types",
+    "db:generate": "pnpm --filter @debrief/db generate",
+    "db:migrate": "pnpm --filter @debrief/db migrate",
+    "db:studio": "pnpm --filter @debrief/db studio"
   },
   "devDependencies": {
-    "prettier": "3.9.6",
+    "@biomejs/biome": "2.5.13",
     "turbo": "^2.10.13",
     "typescript": "7.0.2"
   },
