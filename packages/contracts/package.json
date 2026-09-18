@@ -4,14 +4,19 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
+    "build": "tsc",
     "lint": "biome check .",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
-    "zod": "^4.6.5"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@debrief/typescript-config": "workspace:*"

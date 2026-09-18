@@ -1,5 +1,5 @@
 {
-  "extends": "@debrief/typescript-config/base.json",
+  "extends": "@debrief/typescript-config/node.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

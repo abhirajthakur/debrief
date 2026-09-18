@@ -4,24 +4,29 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
+    "build": "tsc",
     "generate": "drizzle-kit generate",
-    "migrate":  "drizzle-kit migrate",
+    "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio",
+    "clean": "rm -rf dist",
     "lint": "biome check .",
     "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@debrief/typescript-config": "workspace:*",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^1.0.0-rc.4",
-    "tsx": "^4.23.13"
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2",
-    "drizzle-orm": "^1.0.0-rc.4",
-    "pg": "^8.23.0"
+    "tsx": "catalog:"
   }
 }
