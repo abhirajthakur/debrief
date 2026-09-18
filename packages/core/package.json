@@ -1,0 +1,21 @@
+{
+  "name": "@debrief/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@debrief/contracts": "workspace:*",
+    "@debrief/providers": "workspace:*",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@debrief/typescript-config": "workspace:*"
+  }
+}
