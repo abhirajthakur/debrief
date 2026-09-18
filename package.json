@@ -8,6 +8,7 @@
     "format:check": "biome format .",
     "format": "biome format --write .",
     "check-types": "turbo run check-types",
+    "clean": "turbo run clean",
     "db:generate": "pnpm --filter @debrief/db generate",
     "db:migrate": "pnpm --filter @debrief/db migrate",
     "db:studio": "pnpm --filter @debrief/db studio"
