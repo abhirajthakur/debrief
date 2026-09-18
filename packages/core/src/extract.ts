@@ -1,12 +1,14 @@
 import { ExtractionResultSchema, type ExtractionResult } from "@debrief/contracts";
 import type { LLMProvider } from "@debrief/providers";
-import { EXTRACT_PROMPT_V1, PROMPT_VERSION } from "./prompts/extract.v1.js";
+import { buildExtractPrompt, PROMPT_VERSION } from "./prompts/extract.v1.js";
 import { parseJsonWithRetry } from "./validation/parse.js";
 
 export type ExtractOptions = {
   provider: LLMProvider;
   model: string;
   transcript: string;
+  /** Defaults to now. Pass a fixed date in golden-case evals for determinism. */
+  referenceDate?: Date;
 };
 
 export type ExtractOutput = {
@@ -18,6 +20,7 @@ export async function extractActionItems({
   provider,
   model,
   transcript,
+  referenceDate = new Date(),
 }: ExtractOptions): Promise<ExtractOutput> {
   const result = await parseJsonWithRetry({
     schema: ExtractionResultSchema,
@@ -27,7 +30,7 @@ export async function extractActionItems({
         temperature: 0.2,
         jsonMode: true,
         messages: [
-          { role: "system", content: EXTRACT_PROMPT_V1 },
+          { role: "system", content: buildExtractPrompt(referenceDate) },
           { role: "user", content: transcript },
           ...(feedback
             ? [

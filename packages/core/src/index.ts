@@ -1,3 +1,4 @@
 export * from "./extract.js";
+export * from "./route.js";
 export * from "./validation/parse.js";
-export { EXTRACT_PROMPT_V1, PROMPT_VERSION } from "./prompts/extract.v1.js";
+export { buildExtractPrompt, PROMPT_VERSION } from "./prompts/extract.v1.js";

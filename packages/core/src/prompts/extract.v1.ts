@@ -1,6 +1,15 @@
-export const PROMPT_VERSION = 'extract-v1';
+// A function rather than a static string: the model has no notion of "today"
+// on its own, so relative dates ("by Friday", "next week") are unresolvable
+// without a reference point being injected at call time. Accepting the date
+// as a parameter (rather than reading it internally) also keeps this
+// deterministic for eval golden cases — the caller pins the date, so the
+// same transcript always produces the same expected dueDate in tests.
+export const PROMPT_VERSION = "extract-v1";
 
-export const EXTRACT_PROMPT_V1 = `You are an assistant that extracts concrete action items from a meeting transcript.
+export function buildExtractPrompt(referenceDate: Date): string {
+  return `You are an assistant that extracts concrete action items from a meeting transcript.
+
+Today's date is ${referenceDate.toISOString()} (ISO 8601, UTC). Use it to resolve relative dates like "Friday", "tomorrow", "next week", or "end of month" into absolute ISO 8601 datetimes with a timezone offset. If a date is mentioned but too vague to resolve confidently (e.g. "sometime next month"), leave dueDate null rather than guessing.
 
 Return ONLY valid JSON matching this exact shape, no prose, no markdown fences:
 {
@@ -22,3 +31,4 @@ Rules:
 - If nothing in the transcript is an action item, return an empty items array.
 - Never invent an owner or due date that wasn't stated or clearly implied.
 - confidence should be under 0.5 when the owner or task is ambiguous.`;
+}
