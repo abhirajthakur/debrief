@@ -161,7 +161,21 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
-  injectWorkspacePackages: true
+
+catalogs:
+  default:
+    dotenv:
+      specifier: ^17.4.2
+      version: 17.4.2
+    drizzle-orm:
+      specifier: ^1.0.0-rc.4
+      version: 1.0.0-rc.5-ab785fc
+    tsx:
+      specifier: ^4.23.13
+      version: 4.23.13
+    zod:
+      specifier: ^4.6.5
+      version: 4.6.5
 
 importers:
 
@@ -195,16 +209,22 @@ importers:
         specifier: ^2.8.6
         version: 2.8.6
       dotenv:
-        specifier: ^17.4.2
+        specifier: 'catalog:'
         version: 17.4.2
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.5-ab785fc(@types/pg@8.23.1)(pg@8.23.0)(zod@4.6.5)
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      pg:
+        specifier: ^8.23.0
+        version: 8.23.0
       winston:
         specifier: ^3.19.0
         version: 3.19.0
       zod:
-        specifier: ^4.6.5
+        specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
       '@debrief/typescript-config':
@@ -220,13 +240,13 @@ importers:
         specifier: ^26.6.1
         version: 26.6.1
       tsx:
-        specifier: ^4.23.13
+        specifier: 'catalog:'
         version: 4.23.13
 
   packages/contracts:
     dependencies:
       zod:
-        specifier: ^4.6.5
+        specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
       '@debrief/typescript-config':
@@ -242,7 +262,7 @@ importers:
         specifier: workspace:*
         version: link:../providers
       zod:
-        specifier: ^4.6.5
+        specifier: 'catalog:'
         version: 4.6.5
     devDependencies:
       '@debrief/typescript-config':
@@ -252,10 +272,10 @@ importers:
   packages/db:
     dependencies:
       dotenv:
-        specifier: ^17.4.2
+        specifier: 'catalog:'
         version: 17.4.2
       drizzle-orm:
-        specifier: ^1.0.0-rc.4
+        specifier: 'catalog:'
         version: 1.0.0-rc.5-ab785fc(@types/pg@8.23.1)(pg@8.23.0)(zod@4.6.5)
       pg:
         specifier: ^8.23.0
@@ -271,7 +291,7 @@ importers:
         specifier: ^1.0.0-rc.4
         version: 1.0.0-rc.5-ab785fc
       tsx:
-        specifier: ^4.23.13
+        specifier: 'catalog:'
         version: 4.23.13
 
   packages/providers:
