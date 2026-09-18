@@ -7,6 +7,9 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate":  "drizzle-kit migrate",
+    "studio": "drizzle-kit studio",
     "lint": "biome check .",
     "check-types": "tsc --noEmit"
   },
