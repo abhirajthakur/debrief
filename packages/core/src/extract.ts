@@ -1,7 +1,7 @@
-import { ExtractionResultSchema, type ExtractionResult } from "@debrief/contracts";
-import type { LLMProvider } from "@debrief/providers";
-import { buildExtractPrompt, PROMPT_VERSION } from "./prompts/extract.v1.js";
-import { parseJsonWithRetry } from "./validation/parse.js";
+import { type ExtractionResult, extractionResultSchema } from '@debrief/contracts';
+import type { LLMProvider } from '@debrief/providers';
+import { buildExtractPrompt, PROMPT_VERSION } from './prompts/extract.v1.js';
+import { parseJsonWithRetry } from './validation/parse.js';
 
 export type ExtractOptions = {
   provider: LLMProvider;
@@ -23,19 +23,19 @@ export async function extractActionItems({
   referenceDate = new Date(),
 }: ExtractOptions): Promise<ExtractOutput> {
   const result = await parseJsonWithRetry({
-    schema: ExtractionResultSchema,
+    schema: extractionResultSchema,
     generate: async (feedback) => {
       const response = await provider.complete({
         model,
         temperature: 0.2,
         jsonMode: true,
         messages: [
-          { role: "system", content: buildExtractPrompt(referenceDate) },
-          { role: "user", content: transcript },
+          { role: 'system', content: buildExtractPrompt(referenceDate) },
+          { role: 'user', content: transcript },
           ...(feedback
             ? [
                 {
-                  role: "user" as const,
+                  role: 'user' as const,
                   content: `Your previous response was invalid: ${feedback}\nReturn corrected JSON only.`,
                 },
               ]

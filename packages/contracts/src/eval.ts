@@ -1,47 +1,47 @@
-import { z } from "zod";
-import { ExtractedActionItemSchema } from "./action-item.js";
+import { z } from 'zod';
+import { extractedActionItemSchema } from './action-item.js';
 
-export const GoldenCaseCategory = z.enum([
-  "normal", // straightforward transcript, should be a clean pass
-  "no_action_items", // pure chitchat — tests against false positives
-  "adversarial", // contains a decoy that sounds like a task but isn't
+export const goldenCaseCategory = z.enum([
+  'normal', // straightforward transcript, should be a clean pass
+  'no_action_items', // pure chitchat — tests against false positives
+  'adversarial', // contains a decoy that sounds like a task but isn't
 ]);
-export type GoldenCaseCategory = z.infer<typeof GoldenCaseCategory>;
+export type GoldenCaseCategory = z.infer<typeof goldenCaseCategory>;
 
-export const GoldenCaseSchema = z.object({
+export const goldenCaseSchema = z.object({
   id: z.string(),
   name: z.string(),
-  category: GoldenCaseCategory,
+  category: goldenCaseCategory,
   transcript: z.string(),
   expectedItems: z.array(
-    ExtractedActionItemSchema.partial({ confidence: true, sourceQuote: true }),
+    extractedActionItemSchema.partial({ confidence: true, sourceQuote: true }),
   ),
 });
-export type GoldenCase = z.infer<typeof GoldenCaseSchema>;
+export type GoldenCase = z.infer<typeof goldenCaseSchema>;
 
 // Judge model scores one run's extraction against a golden case's expected
 // items. Always a different provider than the actor (see LLM_JUDGE_* in
 // .env.example) so a model never grades its own output.
-export const JudgeVerdictSchema = z.object({
+export const judgeVerdictSchema = z.object({
   matchedCount: z.number().int().min(0),
   missedItems: z.array(z.string()),
   hallucinatedItems: z.array(z.string()),
   passed: z.boolean(),
   reasoning: z.string().max(1000),
 });
-export type JudgeVerdict = z.infer<typeof JudgeVerdictSchema>;
+export type JudgeVerdict = z.infer<typeof judgeVerdictSchema>;
 
-export const EvalResultSchema = z.object({
+export const evalResultSchema = z.object({
   id: z.uuid(),
   evalRunId: z.uuid(),
   goldenCaseId: z.string(),
-  verdict: JudgeVerdictSchema,
+  verdict: judgeVerdictSchema,
   createdAt: z.iso.datetime(),
 });
-export type EvalResult = z.infer<typeof EvalResultSchema>;
+export type EvalResult = z.infer<typeof evalResultSchema>;
 
 // Aggregate stats for one sweep across the whole golden set.
-export const EvalRunSummarySchema = z.object({
+export const evalRunSummarySchema = z.object({
   id: z.uuid(),
   promptVersion: z.string(),
   actorModel: z.string(), // e.g. "groq/llama-3.3-70b-versatile"
@@ -51,4 +51,4 @@ export const EvalRunSummarySchema = z.object({
   hallucinationRate: z.number().min(0).max(1),
   createdAt: z.iso.datetime(),
 });
-export type EvalRunSummary = z.infer<typeof EvalRunSummarySchema>;
+export type EvalRunSummary = z.infer<typeof evalRunSummarySchema>;
