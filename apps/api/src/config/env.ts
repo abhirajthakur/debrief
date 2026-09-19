@@ -18,6 +18,8 @@ const EnvSchema = z.object({
 
   GROQ_API_KEY: z.string().optional(),
   GEMINI_API_KEY: z.string().optional(),
+
+  SLACK_WEBHOOK_URL: z.url().optional(),
 });
 
 export const env = EnvSchema.parse(process.env);

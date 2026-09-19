@@ -15,6 +15,7 @@
     "@debrief/contracts": "workspace:*",
     "@debrief/core": "workspace:*",
     "@debrief/db": "workspace:*",
+    "@debrief/integrations": "workspace:*",
     "@debrief/providers": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "catalog:",

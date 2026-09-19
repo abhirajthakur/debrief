@@ -1,3 +1,4 @@
+import { getIntegration, type PostDigestInput, type Tool } from "@debrief/integrations";
 import { getProvider, type LLMProvider } from "@debrief/providers";
 import { env } from "./config/env.js";
 
@@ -7,6 +8,8 @@ export type Container = {
     llmActor: { provider: string; model: string };
   };
   actorProvider: LLMProvider;
+  // Undefined when SLACK_WEBHOOK_URL isn't set — callers must handle that.
+  slackDigestTool?: Tool<PostDigestInput, void>;
 };
 
 export function createContainer(): Container {
@@ -17,11 +20,18 @@ export function createContainer(): Container {
 
   const actorProvider = getProvider(env.LLM_ACTOR_PROVIDER, { apiKey });
 
+  const slackDigestTool = env.SLACK_WEBHOOK_URL
+    ? getIntegration("slack", { webhookUrl: env.SLACK_WEBHOOK_URL }).tools.find(
+        (tool): tool is Tool<PostDigestInput, void> => tool.name === "slack.postDigest",
+      )
+    : undefined;
+
   return {
     config: {
       port: env.PORT,
       llmActor: { provider: env.LLM_ACTOR_PROVIDER, model: env.LLM_ACTOR_MODEL },
     },
     actorProvider,
+    slackDigestTool,
   };
 }

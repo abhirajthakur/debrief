@@ -202,6 +202,9 @@ importers:
       '@debrief/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@debrief/integrations':
+        specifier: workspace:*
+        version: link:../../packages/integrations
       '@debrief/providers':
         specifier: workspace:*
         version: link:../../packages/providers
@@ -293,6 +296,16 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.23.13
+
+  packages/integrations:
+    dependencies:
+      '@debrief/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+    devDependencies:
+      '@debrief/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/providers:
     devDependencies:
