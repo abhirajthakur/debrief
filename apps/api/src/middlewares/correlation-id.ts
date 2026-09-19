@@ -7,5 +7,5 @@ const HEADER = "x-correlation-id";
 export function correlationId(req: Request, res: Response, next: NextFunction): void {
   const id = req.header(HEADER) ?? randomUUID();
   res.setHeader(HEADER, id);
-  requestContext.run({ correlationId: id }, () => next);
+  requestContext.run({ correlationId: id }, () => next());
 }
