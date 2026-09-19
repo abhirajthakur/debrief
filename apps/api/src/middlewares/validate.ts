@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodType } from "zod";
+import { sendError } from "../utils/api-response.js";
 
 type RequestPart = "body" | "query" | "params";
 
@@ -8,16 +9,16 @@ export const validate = (schema: ZodType, part: RequestPart = "body") => {
     const result = schema.safeParse(req[part]);
 
     if (!result.success) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        details: result.error.issues,
-      });
+      sendError(res, 400, "Invalid request", result.error.issues);
+      return;
     }
 
     const parsed = result.data;
 
     if (part === "query") {
+      // Express 5 made req.query a getter-only property on the prototype —
+      // a plain assignment throws. Object.defineProperty shadows it on the
+      // instance instead.
       Object.defineProperty(req, "query", {
         value: parsed,
         writable: true,
