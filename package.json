@@ -11,22 +11,24 @@
     "clean": "turbo run clean",
     "db:generate": "pnpm --filter @debrief/db generate",
     "db:migrate": "pnpm --filter @debrief/db migrate",
-    "db:studio": "pnpm --filter @debrief/db studio"
+    "db:studio": "pnpm --filter @debrief/db studio",
+    "eval": "pnpm --filter @debrief/evals run eval",
+    "eval:dry": "pnpm --filter @debrief/evals run eval:dry"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
     "turbo": "^2.10.13",
     "typescript": "7.0.2"
   },
-  "engines": {
-    "node": ">=24"
-  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.4.1",
+      "version": "12.6.0",
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@12.4.1"
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@12.6.0"
 }

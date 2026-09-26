@@ -7,6 +7,17 @@ type ParseWithRetryOptions<T> = {
   maxAttempts?: number;
 };
 
+// Some models wrap JSON output in ```json ... ``` fences even when jsonMode
+// is requested and the prompt explicitly says not to. Stripping this
+// defensively before parsing is standard practice — it's a no-op when
+// there are no fences, and fixes the single most common cause of parse
+// failures when there are.
+function stripCodeFences(text: string): string {
+  const trimmed = text.trim();
+  const match = trimmed.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?```$/);
+  return match?.[1]?.trim() ?? trimmed;
+}
+
 /**
  * Calls `generate` and validates its output against `schema`. If parsing or
  * validation fails, it retries with the specific error fed back in as
@@ -23,10 +34,11 @@ export async function parseJsonWithRetry<T>({
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const raw = await generate(feedback);
+    const cleaned = stripCodeFences(raw);
 
     let parsed: unknown;
     try {
-      parsed = JSON.parse(raw);
+      parsed = JSON.parse(cleaned);
     } catch (err) {
       feedback = `Response was not valid JSON: ${(err as Error).message}`;
       continue;

@@ -19,8 +19,8 @@ export type CompletionResponse = {
   finishReason: "stop" | "length" | "error";
 };
 
-export interface LLMProvider {
-  readonly name: string;
+export type LLMProvider = {
+  name: string;
   complete(request: CompletionRequest): Promise<CompletionResponse>;
 }
 

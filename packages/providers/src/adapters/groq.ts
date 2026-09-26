@@ -1,4 +1,5 @@
 import { ProviderError } from "../errors.js";
+import { fetchWithRetry } from "../retry.js";
 import type {
   CompletionRequest,
   CompletionResponse,
@@ -21,7 +22,7 @@ function createGroqProvider(config: ProviderConfig): LLMProvider {
   return {
     name: "groq",
     async complete(request: CompletionRequest): Promise<CompletionResponse> {
-      const response = await fetch(GROQ_ENDPOINT, {
+      const response = await fetchWithRetry(GROQ_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
