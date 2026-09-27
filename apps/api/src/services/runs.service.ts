@@ -3,10 +3,11 @@ import { decideActionItemStatus, extractActionItems } from "@debrief/core";
 import type { PostDigestInput, Tool } from "@debrief/integrations";
 import type { LLMProvider } from "@debrief/providers";
 import { logger } from "../lib/logger.js";
+import { withSpan } from "../lib/tracing.js";
+import * as actionItemsRepository from "../repositories/action-items.repository.js";
 import * as runsRepository from "../repositories/runs.repository.js";
 import * as spansRepository from "../repositories/spans.repository.js";
 import { ApiError } from "../utils/api-error.js";
-import { withSpan } from "../lib/tracing.js";
 
 type CreateRunDeps = {
   actorProvider: LLMProvider;
@@ -53,7 +54,7 @@ export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
     promptVersion,
   });
 
-  const insertedItems = await runsRepository.insertActionItems(
+  const insertedItems = await actionItemsRepository.insertActionItems(
     result.items.map((item) => ({
       runId: runRow.id,
       task: item.task,
@@ -73,7 +74,8 @@ export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
 
   // Posting the digest is best-effort: a Slack failure shouldn't fail a run
   // that otherwise extracted and persisted everything correctly.
-  if (deps.slackDigestTool) {
+  const slackDigestTool = deps.slackDigestTool;
+  if (slackDigestTool) {
     logger.info("Posting Slack digest", {
       runId: runRow.id,
     });
@@ -91,7 +93,7 @@ export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
 
     const digestResult = await withSpan(
       { runId: runRow.id, type: "tool", name: "slack.postDigest", input: digestInput },
-      () => deps.slackDigestTool!.execute(digestInput),
+      () => slackDigestTool.execute(digestInput),
     );
 
     if (!digestResult.success) {
@@ -126,7 +128,7 @@ export async function getRunDetail(runId: string) {
   }
 
   const [items, traceSpans] = await Promise.all([
-    runsRepository.findActionItemsByRunId(runId),
+    actionItemsRepository.findActionItemsByRunId(runId),
     spansRepository.findSpansByRunId(runId),
   ]);
 

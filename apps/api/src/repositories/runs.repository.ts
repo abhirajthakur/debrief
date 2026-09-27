@@ -1,5 +1,5 @@
-import type { ActionItemRow, NewActionItemRow, NewRunRow, RunRow } from "@debrief/db";
-import { actionItems, db, eq, runs } from "@debrief/db";
+import type { NewRunRow, RunRow } from "@debrief/db";
+import { db, eq, runs } from "@debrief/db";
 import { logger } from "../lib/logger.js";
 
 export async function createRun(values: Omit<NewRunRow, "id">) {
@@ -20,16 +20,6 @@ export async function completeRun(runId: string, promptVersion: string) {
     .where(eq(runs.id, runId));
 }
 
-export async function insertActionItems(items: NewActionItemRow[]) {
-  if (items.length === 0) {
-    return [];
-  }
-
-  const insertedActionItems = await db.insert(actionItems).values(items).returning();
-
-  return insertedActionItems;
-}
-
 export async function findAllRuns(limit = 50): Promise<RunRow[]> {
   return await db.query.runs.findMany({
     orderBy: {
@@ -46,13 +36,4 @@ export async function findRunById(runId: string): Promise<RunRow | undefined> {
     },
   });
   return row;
-}
-
-export async function findActionItemsByRunId(runId: string): Promise<ActionItemRow[]> {
-  const actionItems = await db.query.actionItems.findMany({
-    where: {
-      runId,
-    },
-  });
-  return actionItems;
 }

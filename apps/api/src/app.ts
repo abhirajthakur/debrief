@@ -1,13 +1,12 @@
 import cors from "cors";
+import type { Express } from "express";
 import express from "express";
 import { env } from "./config/env.js";
+import type { Container } from "./container.js";
 import { correlationId } from "./middlewares/correlation-id.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 import { routeNotFound } from "./middlewares/route-not-found.js";
 import { v1Router } from "./routers/v1/index.router.js";
-
-import type { Express } from "express";
-import type { Container } from "./container.js";
 
 export function createApp(container: Container): Express {
   const app = express();
