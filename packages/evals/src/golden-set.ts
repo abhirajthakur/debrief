@@ -1,4 +1,4 @@
-import type { GoldenCase } from "@debrief/contracts";
+import type { GoldenCase } from "./schemas.js";
 
 // A fixed Monday. Every golden case's transcript and expectedItems are
 // written relative to this date — evals must always pass this exact date

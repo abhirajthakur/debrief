@@ -1,4 +1,4 @@
-import type { JudgeVerdict } from "@debrief/contracts";
+import type { JudgeVerdict } from "./schemas.js";
 
 export type ScoredCase = {
   goldenCaseId: string;

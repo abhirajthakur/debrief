@@ -1,11 +1,7 @@
-import {
-  type ExtractedActionItem,
-  type GoldenCase,
-  type JudgeVerdict,
-  judgeVerdictSchema,
-} from "@debrief/contracts";
+import type { ExtractedActionItem } from "@debrief/contracts";
 import { parseJsonWithRetry } from "@debrief/core";
 import type { LLMProvider } from "@debrief/providers";
+import { type GoldenCase, type JudgeVerdict, judgeVerdictSchema } from "./schemas.js";
 
 const JUDGE_SYSTEM_PROMPT = `You are a strict grading assistant comparing an AI system's extracted action items against a known-correct expected answer. Return ONLY valid JSON, no prose, no markdown fences.`;
 

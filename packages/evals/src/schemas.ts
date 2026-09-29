@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { extractedActionItemSchema } from './action-item.js';
+import { extractedActionItemSchema } from "@debrief/contracts";
+import { z } from "zod";
 
 export const goldenCaseCategory = z.enum([
-  'normal', // straightforward transcript, should be a clean pass
-  'no_action_items', // pure chitchat — tests against false positives
-  'adversarial', // contains a decoy that sounds like a task but isn't
+  "normal", // straightforward transcript, should be a clean pass
+  "no_action_items", // pure chitchat — tests against false positives
+  "adversarial", // contains a decoy that sounds like a task but isn't
 ]);
 export type GoldenCaseCategory = z.infer<typeof goldenCaseCategory>;
 
