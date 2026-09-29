@@ -1,10 +1,11 @@
+import type { ReviewActionItemInput } from "@debrief/contracts";
 import type { PostAlertInput, Tool } from "@debrief/integrations";
 import { logger } from "../lib/logger.js";
 import { withSpan } from "../lib/tracing.js";
 import * as actionItemsRepository from "../repositories/action-items.repository.js";
 import { ApiError } from "../utils/api-error.js";
 
-export type ReviewDecision = "approve" | "reject";
+export type ReviewDecision = ReviewActionItemInput["decision"];
 
 type ReviewActionItemDeps = {
   slackAlertTool?: Tool<PostAlertInput, void>;
@@ -30,9 +31,9 @@ export async function reviewActionItem(
     return actionItemsRepository.updateActionItemStatus(itemId, "rejected");
   }
 
-  // decision === 'approve'
   const slackAlertTool = deps.slackAlertTool;
 
+  // decision === 'approve'
   if (!slackAlertTool) {
     // No Slack configured — nothing to execute, but the human decision is
     // still real. Mark it executed rather than silently doing nothing.

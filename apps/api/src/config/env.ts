@@ -19,6 +19,9 @@ const EnvSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
 
   SLACK_WEBHOOK_URL: z.url().optional(),
+
+  JWT_SECRET: z.string().min(16, { error: "JWT_SECRET must be at least 16 characters" }),
+  JWT_EXPIRES_IN: z.string().default("7d"),
 });
 
 export const env = EnvSchema.parse(process.env);
