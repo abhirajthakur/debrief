@@ -4,9 +4,9 @@ import { login, signup } from "../services/auth.service.js";
 import { sendSuccess } from "../utils/api-response.js";
 
 export function signupHandler() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<unknown, unknown, SignupInput>, res: Response, next: NextFunction) => {
     try {
-      const result = await signup(req.body as SignupInput);
+      const result = await signup(req.body);
       sendSuccess(res, result, 201);
     } catch (err) {
       next(err);
@@ -15,9 +15,9 @@ export function signupHandler() {
 }
 
 export function loginHandler() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<unknown, unknown, LoginInput>, res: Response, next: NextFunction) => {
     try {
-      const result = await login(req.body as LoginInput);
+      const result = await login(req.body);
       sendSuccess(res, result);
     } catch (err) {
       next(err);

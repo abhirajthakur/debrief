@@ -1,6 +1,6 @@
 import type { ActionItemStatus } from "@debrief/contracts";
 import type { ActionItemRow, NewActionItemRow } from "@debrief/db";
-import { actionItems, db, eq } from "@debrief/db";
+import { actionItems, db, eq, runs } from "@debrief/db";
 
 export async function insertActionItems(items: NewActionItemRow[]): Promise<ActionItemRow[]> {
   if (items.length === 0) {
@@ -25,6 +25,20 @@ export async function findActionItemsByRunId(runId: string): Promise<ActionItemR
     },
   });
   return actionItems;
+}
+
+// Action items have no userId of their own — ownership comes from the run
+// they belong to. Joining to runs here is the one place that fact leaks
+// out, so the service layer never has to know about it.
+export async function findActionItemWithOwner(
+  itemId: string,
+): Promise<{ item: ActionItemRow; ownerUserId: string } | undefined> {
+  const [row] = await db
+    .select({ item: actionItems, ownerUserId: runs.userId })
+    .from(actionItems)
+    .innerJoin(runs, eq(actionItems.runId, runs.id))
+    .where(eq(actionItems.id, itemId));
+  return row;
 }
 
 export async function updateActionItemStatus(

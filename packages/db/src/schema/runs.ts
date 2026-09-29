@@ -1,8 +1,12 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { runStatusEnum } from "./enums.js";
+import { users } from "./users.js";
 
 export const runs = pgTable("runs", {
   id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   transcript: text("transcript").notNull(),
   status: runStatusEnum("status").notNull().default("queued"),
   promptVersion: text("prompt_version").notNull(),

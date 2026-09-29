@@ -20,8 +20,11 @@ export async function completeRun(runId: string, promptVersion: string) {
     .where(eq(runs.id, runId));
 }
 
-export async function findAllRuns(limit = 50): Promise<RunRow[]> {
+export async function findAllRuns(userId: string, limit = 50): Promise<RunRow[]> {
   return await db.query.runs.findMany({
+    where: {
+      userId,
+    },
     orderBy: {
       startedAt: "desc",
     },
@@ -29,10 +32,11 @@ export async function findAllRuns(limit = 50): Promise<RunRow[]> {
   });
 }
 
-export async function findRunById(runId: string): Promise<RunRow | undefined> {
+export async function findRunById(runId: string, userId: string): Promise<RunRow | undefined> {
   const row = await db.query.runs.findFirst({
     where: {
       id: runId,
+      userId,
     },
   });
   return row;

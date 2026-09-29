@@ -16,13 +16,14 @@ type CreateRunDeps = {
   slackDigestTool?: Tool<PostDigestInput, void>;
 };
 
-export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
+export async function createRun(userId: string, input: CreateRunInput, deps: CreateRunDeps) {
   logger.info("Creating run", {
     provider: deps.actorProviderName,
     model: deps.actorModel,
   });
 
   const runRow = await runsRepository.createRun({
+    userId,
     transcript: input.transcript,
     status: "extracting",
     promptVersion: "pending", // overwritten once extraction finishes
@@ -30,6 +31,7 @@ export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
   });
 
   logger.info("Run created; starting action item extraction", {
+    userId,
     runId: runRow.id,
   });
 
@@ -117,12 +119,12 @@ export async function createRun(input: CreateRunInput, deps: CreateRunDeps) {
   return { runId: runRow.id, summary: result.summary, items: insertedItems };
 }
 
-export async function listRuns() {
-  return runsRepository.findAllRuns();
+export async function listRuns(userId: string) {
+  return runsRepository.findAllRuns(userId);
 }
 
-export async function getRunDetail(runId: string) {
-  const run = await runsRepository.findRunById(runId);
+export async function getRunDetail(runId: string, userId: string) {
+  const run = await runsRepository.findRunById(runId, userId);
   if (!run) {
     throw ApiError.notFound(`Run ${runId} not found`);
   }
