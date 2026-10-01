@@ -1,6 +1,6 @@
+import path from "node:path";
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
-import path from "node:path";
 
 config({ path: path.resolve(import.meta.dirname, "../../.env") });
 
