@@ -1,44 +1,38 @@
-import type { CreateRunInput } from "@debrief/contracts";
-import { decideActionItemStatus, extractActionItems } from "@debrief/core";
-import type { PostDigestInput, Tool } from "@debrief/integrations";
-import type { LLMProvider } from "@debrief/providers";
-import { logger } from "../lib/logger.js";
-import { withSpan } from "../lib/tracing.js";
-import * as actionItemsRepository from "../repositories/action-items.repository.js";
-import * as runsRepository from "../repositories/runs.repository.js";
-import * as spansRepository from "../repositories/spans.repository.js";
-import { ApiError } from "../utils/api-error.js";
+import type { CreateRunInput } from '@debrief/contracts';
+import { decideActionItemStatus, extractActionItems } from '@debrief/core';
+import type { PostDigestInput } from '@debrief/integrations';
+import type { LLMProvider } from '@debrief/providers';
+import { logger } from '../lib/logger.js';
+import { withSpan } from '../lib/tracing.js';
+import * as actionItemsRepository from '../repositories/action-items.repository.js';
+import * as runsRepository from '../repositories/runs.repository.js';
+import * as spansRepository from '../repositories/spans.repository.js';
+import { ApiError } from '../utils/api-error.js';
+import { getSlackToolsForUser } from './integrations.service.js';
 
 type CreateRunDeps = {
   actorProvider: LLMProvider;
   actorProviderName: string;
   actorModel: string;
-  slackDigestTool?: Tool<PostDigestInput, void>;
 };
 
 export async function createRun(userId: string, input: CreateRunInput, deps: CreateRunDeps) {
-  logger.info("Creating run", {
-    provider: deps.actorProviderName,
-    model: deps.actorModel,
-  });
+  logger.info(`Creating run with provider ${deps.actorProviderName}/${deps.actorModel}`);
 
   const runRow = await runsRepository.createRun({
     userId,
     transcript: input.transcript,
-    status: "extracting",
-    promptVersion: "pending", // overwritten once extraction finishes
+    status: 'extracting',
+    promptVersion: 'pending', // overwritten once extraction finishes
     model: `${deps.actorProviderName}/${deps.actorModel}`,
   });
 
-  logger.info("Run created; starting action item extraction", {
-    userId,
-    runId: runRow.id,
-  });
+  logger.info(`Run ${runRow.id} created; starting action item extraction`);
 
   const { result, promptVersion } = await withSpan(
     {
       runId: runRow.id,
-      type: "llm",
+      type: 'llm',
       name: `extract.${deps.actorProviderName}`,
       input: { model: deps.actorModel, transcriptLength: input.transcript.length },
     },
@@ -50,11 +44,9 @@ export async function createRun(userId: string, input: CreateRunInput, deps: Cre
       }),
   );
 
-  logger.info("Action item extraction completed", {
-    runId: runRow.id,
-    itemCount: result.items.length,
-    promptVersion,
-  });
+  logger.info(
+    `Action item extraction completed for run ${runRow.id}: ${result.items.length} item(s)`,
+  );
 
   const insertedItems = await actionItemsRepository.insertActionItems(
     result.items.map((item) => ({
@@ -69,18 +61,16 @@ export async function createRun(userId: string, input: CreateRunInput, deps: Cre
     })),
   );
 
-  logger.info("Inserted action items", {
-    runId: runRow.id,
-    count: insertedItems.length,
-  });
+  logger.info(`Inserted ${insertedItems.length} action item(s) for run ${runRow.id}`);
+
+  // Looked up fresh for this user, not injected from a boot-time container —
+  // Slack is now a per-user OAuth connection, not one shared env var.
+  const slackTools = await getSlackToolsForUser(userId);
 
   // Posting the digest is best-effort: a Slack failure shouldn't fail a run
   // that otherwise extracted and persisted everything correctly.
-  const slackDigestTool = deps.slackDigestTool;
-  if (slackDigestTool) {
-    logger.info("Posting Slack digest", {
-      runId: runRow.id,
-    });
+  if (slackTools) {
+    logger.info(`Posting Slack digest for run ${runRow.id}`);
 
     const digestInput: PostDigestInput = {
       summary: result.summary,
@@ -94,27 +84,23 @@ export async function createRun(userId: string, input: CreateRunInput, deps: Cre
     };
 
     const digestResult = await withSpan(
-      { runId: runRow.id, type: "tool", name: "slack.postDigest", input: digestInput },
-      () => slackDigestTool.execute(digestInput),
+      { runId: runRow.id, type: 'tool', name: 'slack.postDigest', input: digestInput },
+      () => slackTools.digestTool.execute(digestInput),
     );
 
     if (!digestResult.success) {
-      logger.error("Slack digest failed", {
+      logger.error('Slack digest failed for run', {
         runId: runRow.id,
         error: digestResult.error,
       });
     } else {
-      logger.info("Slack digest posted successfully", {
-        runId: runRow.id,
-      });
+      logger.info('Slack digest posted successfully for run', { runId: runRow.id });
     }
   }
 
   await runsRepository.completeRun(runRow.id, promptVersion);
 
-  logger.info("Run completed successfully", {
-    runId: runRow.id,
-  });
+  logger.info(`Run ${runRow.id} completed successfully`);
 
   return { runId: runRow.id, summary: result.summary, items: insertedItems };
 }

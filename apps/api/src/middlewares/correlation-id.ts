@@ -1,5 +1,5 @@
-import type { NextFunction, Request, Response } from "express";
 import { randomUUID } from "node:crypto";
+import type { NextFunction, Request, Response } from "express";
 import { requestContext } from "../lib/async-context.js";
 
 const HEADER = "x-correlation-id";
