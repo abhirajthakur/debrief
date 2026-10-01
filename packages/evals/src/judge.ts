@@ -1,7 +1,7 @@
-import type { ExtractedActionItem } from "@debrief/contracts";
-import { parseJsonWithRetry } from "@debrief/core";
-import type { LLMProvider } from "@debrief/providers";
-import { type GoldenCase, type JudgeVerdict, judgeVerdictSchema } from "./schemas.js";
+import type { ExtractedActionItem } from '@debrief/contracts';
+import { parseJsonWithRetry } from '@debrief/core';
+import type { LLMProvider } from '@debrief/providers';
+import { type GoldenCase, type JudgeVerdict, judgeVerdictSchema } from './schemas.js';
 
 const JUDGE_SYSTEM_PROMPT = `You are a strict grading assistant comparing an AI system's extracted action items against a known-correct expected answer. Return ONLY valid JSON, no prose, no markdown fences.`;
 
@@ -47,12 +47,12 @@ export async function judgeExtraction(options: {
         temperature: 0,
         jsonMode: true,
         messages: [
-          { role: "system", content: JUDGE_SYSTEM_PROMPT },
-          { role: "user", content: buildJudgeUserPrompt(options.goldenCase, options.actualItems) },
+          { role: 'system', content: JUDGE_SYSTEM_PROMPT },
+          { role: 'user', content: buildJudgeUserPrompt(options.goldenCase, options.actualItems) },
           ...(feedback
             ? [
                 {
-                  role: "user" as const,
+                  role: 'user' as const,
                   content: `Your previous response was invalid: ${feedback}\nReturn corrected JSON only.`,
                 },
               ]

@@ -1,5 +1,5 @@
 export type ChatMessage = {
-  role: "system" | "user" | "assistant";
+  role: 'system' | 'user' | 'assistant';
   content: string;
 };
 
@@ -16,13 +16,13 @@ export type CompletionResponse = {
   text: string;
   model: string;
   usage: { promptTokens: number; completionTokens: number };
-  finishReason: "stop" | "length" | "error";
+  finishReason: 'stop' | 'length' | 'error';
 };
 
 export type LLMProvider = {
   name: string;
   complete(request: CompletionRequest): Promise<CompletionResponse>;
-}
+};
 
 export type ProviderConfig = {
   apiKey: string;

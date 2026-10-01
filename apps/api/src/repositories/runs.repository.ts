@@ -1,14 +1,14 @@
-import type { NewRunRow, RunRow } from "@debrief/db";
-import { db, eq, runs } from "@debrief/db";
-import { logger } from "../lib/logger.js";
+import type { NewRunRow, RunRow } from '@debrief/db';
+import { db, eq, runs } from '@debrief/db';
+import { logger } from '../lib/logger.js';
 
-export async function createRun(values: Omit<NewRunRow, "id">) {
+export async function createRun(values: Omit<NewRunRow, 'id'>) {
   const [row] = await db.insert(runs).values(values).returning();
   if (!row) {
-    logger.error("Failed to insert run", {
+    logger.error('Failed to insert run', {
       data: values,
     });
-    throw new Error("Failed to insert run");
+    throw new Error('Failed to insert run');
   }
   return row;
 }
@@ -16,7 +16,7 @@ export async function createRun(values: Omit<NewRunRow, "id">) {
 export async function completeRun(runId: string, promptVersion: string) {
   await db
     .update(runs)
-    .set({ status: "completed", promptVersion, finishedAt: new Date() })
+    .set({ status: 'completed', promptVersion, finishedAt: new Date() })
     .where(eq(runs.id, runId));
 }
 
@@ -26,7 +26,7 @@ export async function findAllRuns(userId: string, limit = 50): Promise<RunRow[]>
       userId,
     },
     orderBy: {
-      startedAt: "desc",
+      startedAt: 'desc',
     },
     limit,
   });

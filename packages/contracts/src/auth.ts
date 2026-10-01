@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const signupInputSchema = z.object({
   email: z.email(),
-  password: z.string().min(8, { error: "Password must be at least 8 characters" }),
+  password: z.string().min(8, { error: 'Password must be at least 8 characters' }),
 });
 export type SignupInput = z.infer<typeof signupInputSchema>;
 

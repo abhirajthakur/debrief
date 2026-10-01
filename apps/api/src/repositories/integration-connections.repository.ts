@@ -1,8 +1,8 @@
-import type { IntegrationConnectionRow, NewIntegrationConnectionRow } from "@debrief/db";
-import { db, integrationConnections } from "@debrief/db";
+import type { IntegrationConnectionRow, NewIntegrationConnectionRow } from '@debrief/db';
+import { db, integrationConnections } from '@debrief/db';
 
 export async function upsertConnection(
-  values: Omit<NewIntegrationConnectionRow, "id">,
+  values: Omit<NewIntegrationConnectionRow, 'id'>,
 ): Promise<IntegrationConnectionRow> {
   const [row] = await db
     .insert(integrationConnections)
@@ -18,7 +18,7 @@ export async function upsertConnection(
     .returning();
 
   if (!row) {
-    throw new Error("Failed to upsert integration connection");
+    throw new Error('Failed to upsert integration connection');
   }
   return row;
 }

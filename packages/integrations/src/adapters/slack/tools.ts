@@ -1,6 +1,6 @@
-import type { ActionItemStatus, ActionPriority } from "@debrief/contracts";
-import type { Tool, ToolResult } from "../../types.js";
-import { postToSlackWebhook } from "./client.js";
+import type { ActionItemStatus, ActionPriority } from '@debrief/contracts';
+import type { Tool, ToolResult } from '../../types.js';
+import { postToSlackWebhook } from './client.js';
 
 export type DigestItem = {
   task: string;
@@ -16,27 +16,27 @@ export type PostDigestInput = {
 };
 
 function formatDigest({ summary, items }: PostDigestInput): string {
-  const lines = [`*Meeting summary:* ${summary}`, ""];
+  const lines = [`*Meeting summary:* ${summary}`, ''];
 
   if (items.length === 0) {
-    lines.push("_No action items found._");
-    return lines.join("\n");
+    lines.push('_No action items found._');
+    return lines.join('\n');
   }
 
-  lines.push("*Action items:*");
+  lines.push('*Action items:*');
   for (const item of items) {
-    const owner = item.owner ?? "unassigned";
-    const due = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "no due date";
-    const flag = item.status === "pending_review" ? " :warning: needs review" : "";
+    const owner = item.owner ?? 'unassigned';
+    const due = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'no due date';
+    const flag = item.status === 'pending_review' ? ' :warning: needs review' : '';
     lines.push(`• [${item.priority}] ${item.task} — _${owner}_, ${due}${flag}`);
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 export function createPostDigestTool(webhookUrl: string): Tool<PostDigestInput, void> {
   return {
-    name: "slack.postDigest",
+    name: 'slack.postDigest',
     async execute(input): Promise<ToolResult<void>> {
       try {
         await postToSlackWebhook(webhookUrl, formatDigest(input));
@@ -56,8 +56,8 @@ export type PostAlertInput = {
 };
 
 function formatAlert(item: PostAlertInput): string {
-  const owner = item.owner ?? "unassigned";
-  const due = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : "no due date";
+  const owner = item.owner ?? 'unassigned';
+  const due = item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'no due date';
   return `:white_check_mark: *Approved:* [${item.priority}] ${item.task} — _${owner}_, ${due}`;
 }
 
@@ -65,7 +65,7 @@ function formatAlert(item: PostAlertInput): string {
 // targeted notification, distinct from the whole-run digest.
 export function createPostAlertTool(webhookUrl: string): Tool<PostAlertInput, void> {
   return {
-    name: "slack.postAlert",
+    name: 'slack.postAlert',
     async execute(input): Promise<ToolResult<void>> {
       try {
         await postToSlackWebhook(webhookUrl, formatAlert(input));

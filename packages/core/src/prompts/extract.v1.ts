@@ -4,7 +4,7 @@
 // as a parameter (rather than reading it internally) also keeps this
 // deterministic for eval golden cases — the caller pins the date, so the
 // same transcript always produces the same expected dueDate in tests.
-export const PROMPT_VERSION = "extract-v1";
+export const PROMPT_VERSION = 'extract-v1';
 
 export function buildExtractPrompt(referenceDate: Date): string {
   return `You are an assistant that extracts concrete action items from a meeting transcript.

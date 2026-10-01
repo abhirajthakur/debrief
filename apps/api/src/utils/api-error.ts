@@ -5,7 +5,7 @@ export class ApiError extends Error {
     public readonly details?: unknown,
   ) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 
   static badRequest(message: string, details?: unknown): ApiError {
@@ -20,7 +20,7 @@ export class ApiError extends Error {
     return new ApiError(409, message, details);
   }
 
-  static internal(message = "Internal server error"): ApiError {
+  static internal(message = 'Internal server error'): ApiError {
     return new ApiError(500, message);
   }
 }

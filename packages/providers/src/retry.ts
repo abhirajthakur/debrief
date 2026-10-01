@@ -35,7 +35,7 @@ export async function fetchWithRetry(
       return response;
     }
 
-    const retryAfterHeader = response.headers.get("retry-after");
+    const retryAfterHeader = response.headers.get('retry-after');
     const delayMs = retryAfterHeader
       ? Number(retryAfterHeader) * 1000
       : baseDelayMs * 2 ** (attempt - 1); // 5s, 10s, ... if no header given
@@ -43,6 +43,6 @@ export async function fetchWithRetry(
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
-  // Unreachable — the loop always returns — but satisfies the type checker.
-  return response!;
+  // Unreachable — the loop always returns before exhausting attempts.
+  throw new Error('fetchWithRetry: loop exhausted without returning');
 }

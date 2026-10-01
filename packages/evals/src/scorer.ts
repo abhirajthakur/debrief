@@ -1,4 +1,4 @@
-import type { JudgeVerdict } from "./schemas.js";
+import type { JudgeVerdict } from './schemas.js';
 
 export type ScoredCase = {
   goldenCaseId: string;

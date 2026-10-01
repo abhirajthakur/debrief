@@ -1,5 +1,5 @@
-import { UnknownProviderError } from "./errors.js";
-import type { LLMProvider, ProviderConfig, ProviderFactory } from "./types.js";
+import { UnknownProviderError } from './errors.js';
+import type { LLMProvider, ProviderConfig, ProviderFactory } from './types.js';
 
 const registry = new Map<string, ProviderFactory>();
 

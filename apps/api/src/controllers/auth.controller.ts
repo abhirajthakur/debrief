@@ -1,7 +1,7 @@
-import type { LoginInput, SignupInput } from "@debrief/contracts";
-import type { NextFunction, Request, Response } from "express";
-import { login, signup } from "../services/auth.service.js";
-import { sendSuccess } from "../utils/api-response.js";
+import type { LoginInput, SignupInput } from '@debrief/contracts';
+import type { NextFunction, Request, Response } from 'express';
+import { login, signup } from '../services/auth.service.js';
+import { sendSuccess } from '../utils/api-response.js';
 
 export function signupHandler() {
   return async (req: Request<unknown, unknown, SignupInput>, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-export const PROMPT_VERSION = "extract-v2";
+export const PROMPT_VERSION = 'extract-v2';
 
 export function buildExtractPrompt(referenceDate: Date): string {
   return `You are an assistant that extracts concrete action items from a meeting transcript.

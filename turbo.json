@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "clean": {
-      "dependsOn": ["^clean"],
+      "dependsOn": ["^clean"]
     },
     "build": {
       "dependsOn": ["^build"],

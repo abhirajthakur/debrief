@@ -1,6 +1,6 @@
-import type { ActionItemStatus } from "@debrief/contracts";
-import type { ActionItemRow, NewActionItemRow } from "@debrief/db";
-import { actionItems, db, eq, runs } from "@debrief/db";
+import type { ActionItemStatus } from '@debrief/contracts';
+import type { ActionItemRow, NewActionItemRow } from '@debrief/db';
+import { actionItems, db, eq, runs } from '@debrief/db';
 
 export async function insertActionItems(items: NewActionItemRow[]): Promise<ActionItemRow[]> {
   if (items.length === 0) {

@@ -1,4 +1,4 @@
-import type { ZodType } from "zod";
+import type { ZodType } from 'zod';
 
 type ParseWithRetryOptions<T> = {
   schema: ZodType<T>;

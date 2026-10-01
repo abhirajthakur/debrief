@@ -1,31 +1,31 @@
-import { ProviderError } from "../errors.js";
-import { fetchWithRetry } from "../retry.js";
+import { ProviderError } from '../errors.js';
+import { fetchWithRetry } from '../retry.js';
 import type {
   CompletionRequest,
   CompletionResponse,
   LLMProvider,
   ProviderConfig,
-} from "../types.js";
+} from '../types.js';
 
-const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
 
 interface GroqResponse {
   model: string;
   choices: Array<{
     message: { content: string };
-    finish_reason: "stop" | "length" | "tool_calls" | null;
+    finish_reason: 'stop' | 'length' | 'tool_calls' | null;
   }>;
   usage: { prompt_tokens: number; completion_tokens: number };
 }
 
 function createGroqProvider(config: ProviderConfig): LLMProvider {
   return {
-    name: "groq",
+    name: 'groq',
     async complete(request: CompletionRequest): Promise<CompletionResponse> {
       const response = await fetchWithRetry(GROQ_ENDPOINT, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${config.apiKey}`,
         },
         body: JSON.stringify({
@@ -33,7 +33,7 @@ function createGroqProvider(config: ProviderConfig): LLMProvider {
           messages: request.messages,
           temperature: request.temperature ?? 0.2,
           max_tokens: request.maxTokens,
-          response_format: request.jsonMode ? { type: "json_object" } : undefined,
+          response_format: request.jsonMode ? { type: 'json_object' } : undefined,
         }),
         signal: request.signal,
       });
@@ -41,14 +41,14 @@ function createGroqProvider(config: ProviderConfig): LLMProvider {
       if (!response.ok) {
         throw new ProviderError(
           `Groq request failed (${response.status}): ${await response.text()}`,
-          "groq",
+          'groq',
         );
       }
 
       const data = (await response.json()) as GroqResponse;
       const choice = data.choices[0];
       if (!choice) {
-        throw new ProviderError("Groq returned no choices", "groq");
+        throw new ProviderError('Groq returned no choices', 'groq');
       }
 
       return {
@@ -58,7 +58,7 @@ function createGroqProvider(config: ProviderConfig): LLMProvider {
           promptTokens: data.usage.prompt_tokens,
           completionTokens: data.usage.completion_tokens,
         },
-        finishReason: choice.finish_reason === "length" ? "length" : "stop",
+        finishReason: choice.finish_reason === 'length' ? 'length' : 'stop',
       };
     },
   };

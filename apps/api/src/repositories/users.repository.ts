@@ -1,10 +1,10 @@
-import type { NewUserRow, UserRow } from "@debrief/db";
-import { db, users } from "@debrief/db";
+import type { NewUserRow, UserRow } from '@debrief/db';
+import { db, users } from '@debrief/db';
 
-export async function createUser(values: Omit<NewUserRow, "id">): Promise<UserRow> {
+export async function createUser(values: Omit<NewUserRow, 'id'>): Promise<UserRow> {
   const [row] = await db.insert(users).values(values).returning();
   if (!row) {
-    throw new Error("Failed to insert user");
+    throw new Error('Failed to insert user');
   }
   return row;
 }

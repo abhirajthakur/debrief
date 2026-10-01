@@ -1,6 +1,6 @@
-import * as spansRepository from "../repositories/spans.repository.js";
+import * as spansRepository from '../repositories/spans.repository.js';
 
-type SpanType = "llm" | "tool";
+type SpanType = 'llm' | 'tool';
 
 type WithSpanOptions = {
   runId: string;
@@ -15,7 +15,7 @@ type WithSpanOptions = {
 // only "successful" if it didn't throw AND (when the output looks like a
 // ToolResult) that result says success too.
 function looksLikeToolResult(value: unknown): value is { success: boolean; error?: string } {
-  return typeof value === "object" && value !== null && "success" in value;
+  return typeof value === 'object' && value !== null && 'success' in value;
 }
 
 export async function withSpan<T>(options: WithSpanOptions, fn: () => Promise<T>): Promise<T> {
@@ -31,8 +31,8 @@ export async function withSpan<T>(options: WithSpanOptions, fn: () => Promise<T>
       name: options.name,
       input: options.input,
       output: output as unknown,
-      status: failed ? "error" : "success",
-      errorMessage: failed ? ((output as { error?: string }).error ?? "Unknown tool error") : null,
+      status: failed ? 'error' : 'success',
+      errorMessage: failed ? ((output as { error?: string }).error ?? 'Unknown tool error') : null,
       latencyMs: Date.now() - startedAt.getTime(),
       startedAt,
     });
@@ -45,7 +45,7 @@ export async function withSpan<T>(options: WithSpanOptions, fn: () => Promise<T>
       name: options.name,
       input: options.input,
       output: null,
-      status: "error",
+      status: 'error',
       errorMessage: err instanceof Error ? err.message : String(err),
       latencyMs: Date.now() - startedAt.getTime(),
       startedAt,

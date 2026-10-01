@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const actionPrioritySchema = z.enum(["low", "medium", "high", "urgent"]);
+export const actionPrioritySchema = z.enum(['low', 'medium', 'high', 'urgent']);
 export type ActionPriority = z.infer<typeof actionPrioritySchema>;
 
 export const actionItemStatusSchema = z.enum([
-  "pending_review", // low confidence — held for a human to approve
-  "auto_executed", // confidence above threshold — tool calls already ran
-  "executed", // approved manually and executed
-  "rejected", // human rejected it, no tool calls made
-  "failed", // execution attempted but a tool call errored
+  'pending_review', // low confidence — held for a human to approve
+  'auto_executed', // confidence above threshold — tool calls already ran
+  'executed', // approved manually and executed
+  'rejected', // human rejected it, no tool calls made
+  'failed', // execution attempted but a tool call errored
 ]);
 export type ActionItemStatus = z.infer<typeof actionItemStatusSchema>;
 
@@ -44,6 +44,6 @@ export type ActionItem = z.infer<typeof actionItemSchema>;
 // Request body for PATCH /action-items/:itemId — a human's decision on an
 // item that was held for review.
 export const reviewActionItemInputSchema = z.object({
-  decision: z.enum(["approve", "reject"]),
+  decision: z.enum(['approve', 'reject']),
 });
 export type ReviewActionItemInput = z.infer<typeof reviewActionItemInputSchema>;
